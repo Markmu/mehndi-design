@@ -18,6 +18,7 @@ const Navigation = async () => {
           {/* Logo 部分 */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="text-2xl font-bold text-[#2D1810]">
+              <img src="/pattern.svg" alt="Logo" className="w-10 h-10 mr-4 inline" />
               Henna Designs
             </Link>
           </div>
