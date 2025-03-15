@@ -4,7 +4,7 @@ type ImageGridProps = {
   images: {
     id: number;
     name: string;
-    objectUrl: string;
+    objectUrl: string | null;
     tags: {
       id: number;
       name: string;

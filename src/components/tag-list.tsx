@@ -1,60 +1,31 @@
-'use client';
-
-import { useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import TagButton from './tag-button';
 
 type TagListProps = {
   tags: {
     id: number;
     name: string;
     slug: string;
-    count: number;
+    count?: number;
   }[];
   selectedTag?: string;
 };
 
 const TagList = ({ tags, selectedTag }: TagListProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams]
-  );
-
-  const handleTagClick = (slug: string) => {
-    router.push(`/gallery?${createQueryString('tag', slug)}`);
-  };
-
   return (
     <div className="mb-8">
       <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => router.push('/gallery')}
-          className={`px-4 py-2 rounded-full text-sm ${
-            !selectedTag
-              ? 'bg-[#7E4E3B] text-white'
-              : 'bg-gray-100 text-[#2D1810] hover:bg-gray-200'
-          }`}
-        >
-          全部
-        </button>
+        <TagButton
+          slug="all"
+          name="All"
+          isSelected={!selectedTag || selectedTag === 'all'}
+        />
         {tags.map((tag) => (
-          <button
+          <TagButton
             key={tag.id}
-            onClick={() => handleTagClick(tag.slug)}
-            className={`px-4 py-2 rounded-full text-sm ${
-              selectedTag === tag.slug
-                ? 'bg-[#7E4E3B] text-white'
-                : 'bg-gray-100 text-[#2D1810] hover:bg-gray-200'
-            }`}
-          >
-            {tag.name}
-          </button>
+            slug={tag.slug}
+            name={tag.name}
+            isSelected={selectedTag === tag.slug}
+          />
         ))}
       </div>
     </div>

@@ -2,7 +2,7 @@ type ImageCardProps = {
   image: {
     id: number;
     name: string;
-    objectUrl: string;
+    objectUrl: string | null;
     tags: {
       id: number;
       name: string;
@@ -15,7 +15,7 @@ const ImageCard = ({ image }: ImageCardProps) => {
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
       <div className="aspect-square relative">
         <img
-          src={image.objectUrl}
+          src={image.objectUrl || ''}
           alt={image.name}
           className="w-full h-full object-cover"
         />
