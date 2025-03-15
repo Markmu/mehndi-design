@@ -5,10 +5,10 @@ import { eq, and } from 'drizzle-orm';
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const imageId = parseInt(params.id);
+    const imageId = parseInt((await params).id);
     if (isNaN(imageId)) {
       return NextResponse.json({ error: '无效的图片ID' }, { status: 400 });
     }

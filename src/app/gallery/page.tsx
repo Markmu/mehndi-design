@@ -3,14 +3,15 @@ import TagList from '@/components/tag-list';
 import ImageGrid from '@/components/image-grid';
 import Pagination from '@/components/pagination';
 
-type PageProps = {
+type SearchParams = Promise<{
   searchParams: { [key: string]: string | undefined };
-};
+}>;
 
-export default async function GalleryPage({ searchParams }: PageProps) {
-  const page = Number(searchParams?.page) || 1;
+export default async function GalleryPage({ searchParams } : { searchParams: SearchParams }) {
+  await searchParams;
+  const page = Number((searchParams as { page?: string })?.page) || 1;
   const pageSize = 12;
-  const tagSlug = searchParams?.tag || 'all';
+  const tagSlug = (searchParams as { tag?: string })?.tag || 'all';
 
   const [tags, galleryData] = await Promise.all([
     getTags(),
