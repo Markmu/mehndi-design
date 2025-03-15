@@ -29,7 +29,7 @@ const Navigation = async () => {
               <Link
                 key={href}
                 href={href}
-                className={`text-sm font-medium ${
+                className={`text-base font-medium ${
                   pathname === href ? 'text-[#7E4E3B]' : 'text-[#2D1810] hover:text-[#7E4E3B]'
                 }`}
               >
