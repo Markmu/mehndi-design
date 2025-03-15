@@ -1,7 +1,3 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-
 type ImageCardProps = {
   image: {
     id: number;
@@ -15,37 +11,17 @@ type ImageCardProps = {
 };
 
 const ImageCard = ({ image }: ImageCardProps) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [imgSrc, setImgSrc] = useState(image.objectUrl);
-
-  // 使用 useEffect 确保图片 URL 更新时重置加载状态
-  useEffect(() => {
-    setImgSrc(image.objectUrl);
-    setIsLoaded(false);
-  }, [image.objectUrl]);
-
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
       <div className="aspect-square relative">
-        {!isLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
-        )}
         <img
-          src={imgSrc}
+          src={image.objectUrl}
           alt={image.name}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          loading="lazy"
-          onLoad={() => setIsLoaded(true)}
-          onError={() => {
-            // 图片加载失败时使用占位图
-            setImgSrc('/placeholder-image.jpg');
-          }}
+          className="w-full h-full object-cover"
         />
       </div>
       <div className="p-4">
-        <h3 className="font-medium text-[#2D1810] mb-2">{image.name}</h3>
+        {/* 移除文件名显示 */}
         <div className="flex flex-wrap gap-1">
           {image.tags.map((tag) => (
             <span

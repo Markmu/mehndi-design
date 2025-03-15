@@ -32,7 +32,6 @@ const TagList = ({ tags, selectedTag }: TagListProps) => {
 
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-semibold mb-4 text-[#2D1810]">标签筛选</h2>
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => router.push('/gallery')}

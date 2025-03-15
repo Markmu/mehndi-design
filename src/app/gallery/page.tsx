@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 import TagList from '@/components/tag-list';
 import ImageGrid from '@/components/image-grid';
@@ -55,14 +54,14 @@ export default function GalleryPage() {
           setTags(data);
         }
       } catch (error) {
-        console.error('加载标签失败:', error);
+        console.error('fail to load tags:', error);
       }
     }
 
     loadTags();
   }, []);
 
-  // 加载图片
+  // load images
   useEffect(() => {
     async function loadImages() {
       setLoading(true);
@@ -87,7 +86,7 @@ export default function GalleryPage() {
     loadImages();
   }, [tagParam, pagination.page, pagination.pageSize]); // 当标签参数或分页参数变化时重新加载图片
 
-  // 处理页码变化
+  // handle page change
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({
       ...prev,
@@ -97,18 +96,14 @@ export default function GalleryPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
       <main className="flex-grow bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Henna 设计画廊</h1>
+          <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Henna Gallary</h1>
           
-          {/* 标签列表 */}
           <TagList tags={tags} selectedTag={tagParam || undefined} />
           
-          {/* 图片网格 */}
           <ImageGrid images={images} loading={loading} />
           
-          {/* 分页控件 */}
           {!loading && pagination.totalPages > 1 && (
             <div className="flex justify-center mt-8">
               <nav className="flex items-center space-x-2">
