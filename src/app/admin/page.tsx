@@ -152,6 +152,53 @@ export default function AdminPage() {
     setToast(prev => ({ ...prev, show: false }));
   };
 
+  // 添加删除确认状态
+  const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
+
+  // 添加删除图片方法
+  const deleteImage = async () => {
+    if (!selectedImage) return;
+
+    try {
+      const response = await fetch(`/api/images/${selectedImage.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // 从列表中移除已删除的图片
+        setImages(prev => prev.filter(img => img.id !== selectedImage.id));
+
+        // 清除选中状态
+        setSelectedImage(null);
+        setSelectedTags([]);
+
+        // 显示成功提示
+        setToast({
+          show: true,
+          message: '图片删除成功',
+          type: 'success'
+        });
+
+        // 关闭确认对话框
+        setDeleteConfirm(false);
+      } else {
+        // 显示错误提示
+        setToast({
+          show: true,
+          message: '图片删除失败',
+          type: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('删除图片失败:', error);
+      setToast({
+        show: true,
+        message: '删除图片失败',
+        type: 'error'
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow bg-gray-50">
@@ -164,11 +211,35 @@ export default function AdminPage() {
           />
         )}
 
+        {/* 添加删除确认对话框 */}
+        {deleteConfirm && selectedImage && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+              <h3 className="text-lg font-semibold mb-4">Confirm</h3>
+              <p className="mb-6">Are you sure you want to delete image `{selectedImage.name}`? <br /><br />This action cannot be undone.</p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setDeleteConfirm(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={deleteImage}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Image Tag Management</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* 图片列表 */}
+            {/* Image List */}
             <div className="md:col-span-1 bg-white p-4 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">Images</h2>
 
@@ -246,6 +317,14 @@ export default function AdminPage() {
                           </span>
                         ))}
                       </div>
+
+                      {/* 添加删除按钮 */}
+                      <button
+                        onClick={() => setDeleteConfirm(true)}
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm mt-2"
+                      >
+                        Delete Image
+                      </button>
                     </div>
                   </div>
 
@@ -256,8 +335,8 @@ export default function AdminPage() {
                         key={tag.id}
                         onClick={() => toggleTag(tag.id)}
                         className={`px-3 py-1 rounded-full text-sm ${selectedTags.includes(tag.id)
-                            ? 'bg-[#7E4E3B] text-white'
-                            : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                          ? 'bg-[#7E4E3B] text-white'
+                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                           }`}
                       >
                         {tag.name}
