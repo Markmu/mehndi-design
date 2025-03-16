@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Toast from '@/components/toast';
+import Pagination from '@/components/pagination';
 
 type Image = {
   id: number;
@@ -199,6 +200,11 @@ export default function AdminPage() {
     }
   };
 
+  // 添加页面变更处理函数
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow bg-gray-50">
@@ -238,9 +244,9 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Image Tag Management</h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-5 gap-6">
             {/* Image List */}
-            <div className="md:col-span-1 bg-white p-4 rounded-lg shadow">
+            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">Images</h2>
 
               {loading ? (
@@ -253,7 +259,8 @@ export default function AdminPage() {
                     {images.map(image => (
                       <div
                         key={image.id}
-                        className={`flex items-center p-2 rounded cursor-pointer ${selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
+                        className={`flex items-center p-2 rounded cursor-pointer ${
+                          selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
                           }`}
                         onClick={() => handleSelectImage(image)}
                       >
@@ -270,32 +277,20 @@ export default function AdminPage() {
                     ))}
                   </div>
 
-                  {/* pagination */}
+                  {/* 使用 Pagination 组件替代原有分页控件 */}
                   <div className="flex justify-center mt-4">
-                    <button
-                      onClick={() => setPage(p => Math.max(1, p - 1))}
-                      disabled={page === 1}
-                      className="px-3 py-1 rounded bg-gray-100 text-gray-800 disabled:bg-gray-200 disabled:text-gray-500"
-                    >
-                      Prev
-                    </button>
-                    <span className="mx-4">
-                      {page} / {totalPages}
-                    </span>
-                    <button
-                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                      disabled={page === totalPages}
-                      className="px-3 py-1 rounded bg-gray-100 text-gray-800 disabled:bg-gray-200 disabled:text-gray-500"
-                    >
-                      Next
-                    </button>
+                    <Pagination
+                      currentPage={page}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
                   </div>
                 </>
               )}
             </div>
 
             {/* tag edit area */}
-            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
+            <div className="md:col-span-3 bg-white p-4 rounded-lg shadow">
               {selectedImage ? (
                 <>
                   <div className="flex items-start mb-6">

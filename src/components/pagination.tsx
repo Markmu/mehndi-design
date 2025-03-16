@@ -5,16 +5,27 @@ import { useRouter, useSearchParams } from 'next/navigation';
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
+  onPageChange?: (page: number) => void;
+  baseUrl?: string;
 };
 
-export default function Pagination({ currentPage, totalPages }: PaginationProps) {
+export default function Pagination({ 
+  currentPage, 
+  totalPages,
+  onPageChange,
+  baseUrl = '/gallery'
+}: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', newPage.toString());
-    router.push(`/gallery?${params.toString()}`);
+    if (onPageChange) {
+      onPageChange(newPage);
+    } else {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', newPage.toString());
+      router.push(`${baseUrl}?${params.toString()}`);
+    }
   };
 
   return (
