@@ -8,7 +8,7 @@ CREATE TABLE "images" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"object_key" varchar(255) NOT NULL,
-	"object_url" text NOT NULL,
+	"object_url" text,
 	"description" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
