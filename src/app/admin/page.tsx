@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Toast from '@/components/toast';
 import Pagination from '@/components/pagination';
 import ImageUploader from '@/components/image-uploader';
+import { signOut } from "next-auth/react";
 
 type Image = {
   id: number;
@@ -208,24 +209,24 @@ export default function AdminPage() {
 
   // 添加上传对话框状态
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  
+
   // 处理上传成功
   const handleUploadSuccess = () => {
     // 关闭上传对话框
     setShowUploadDialog(false);
-    
+
     // 显示成功提示
     setToast({
       show: true,
       message: '图片上传成功',
       type: 'success'
     });
-    
+
     // 重新加载图片列表
     setPage(1);
     loadImages();
   };
-  
+
   // 处理上传错误
   const handleUploadError = (message: string) => {
     setToast({
@@ -234,7 +235,7 @@ export default function AdminPage() {
       type: 'error'
     });
   };
-  
+
   // 加载图片列表函数
   const loadImages = async () => {
     setLoading(true);
@@ -252,8 +253,27 @@ export default function AdminPage() {
     }
   };
 
+  // 添加登出函数
+  // 在现有代码中添加 signOut 导入
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    window.location.href = '/admin/login';
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-semibold text-[#2D1810]">Mehndi Design Admin</h1>
+          <button
+            onClick={handleLogout}
+            className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm"
+          >
+            Logout
+          </button>
+        </div>
+      </header>
+
       <main className="flex-grow bg-gray-50">
         {/* Toast 组件 */}
         {toast.show && (
@@ -294,7 +314,7 @@ export default function AdminPage() {
             <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full">
               <div className="flex justify-between items-center border-b p-4">
                 <h3 className="text-lg font-semibold">上传新图片</h3>
-                <button 
+                <button
                   onClick={() => setShowUploadDialog(false)}
                   className="text-gray-500 hover:text-gray-700"
                 >
@@ -303,7 +323,7 @@ export default function AdminPage() {
                   </svg>
                 </button>
               </div>
-              <ImageUploader 
+              <ImageUploader
                 tags={allTags}
                 onSuccess={handleUploadSuccess}
                 onError={handleUploadError}
@@ -342,8 +362,7 @@ export default function AdminPage() {
                     {images.map(image => (
                       <div
                         key={image.id}
-                        className={`flex items-center p-2 rounded cursor-pointer ${
-                          selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
+                        className={`flex items-center p-2 rounded cursor-pointer ${selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
                           }`}
                         onClick={() => handleSelectImage(image)}
                       >
