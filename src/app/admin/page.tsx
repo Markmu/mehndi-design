@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Toast from '@/components/toast';
 import Pagination from '@/components/pagination';
+import ImageUploader from '@/components/image-uploader';
 
 type Image = {
   id: number;
@@ -205,6 +206,52 @@ export default function AdminPage() {
     setPage(newPage);
   };
 
+  // 添加上传对话框状态
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  
+  // 处理上传成功
+  const handleUploadSuccess = () => {
+    // 关闭上传对话框
+    setShowUploadDialog(false);
+    
+    // 显示成功提示
+    setToast({
+      show: true,
+      message: '图片上传成功',
+      type: 'success'
+    });
+    
+    // 重新加载图片列表
+    setPage(1);
+    loadImages();
+  };
+  
+  // 处理上传错误
+  const handleUploadError = (message: string) => {
+    setToast({
+      show: true,
+      message,
+      type: 'error'
+    });
+  };
+  
+  // 加载图片列表函数
+  const loadImages = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/images?page=${page}&pageSize=20&tag=all`);
+      if (response.ok) {
+        const result = await response.json();
+        setImages(result.data);
+        setTotalPages(result.pagination.totalPages);
+      }
+    } catch (error) {
+      console.error('fail to load images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow bg-gray-50">
@@ -241,8 +288,44 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* 添加上传对话框 */}
+        {showUploadDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full">
+              <div className="flex justify-between items-center border-b p-4">
+                <h3 className="text-lg font-semibold">上传新图片</h3>
+                <button 
+                  onClick={() => setShowUploadDialog(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <ImageUploader 
+                tags={allTags}
+                onSuccess={handleUploadSuccess}
+                onError={handleUploadError}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Image Tag Management</h1>
+          {/* 添加上传按钮到标题旁边 */}
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-[#2D1810]">Image Tag Management</h1>
+            <button
+              onClick={() => setShowUploadDialog(true)}
+              className="px-4 py-2 bg-[#7E4E3B] text-white rounded hover:bg-[#6D3D2A] flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              上传图片
+            </button>
+          </div>
 
           <div className="grid md:grid-cols-5 gap-6">
             {/* Image List */}
