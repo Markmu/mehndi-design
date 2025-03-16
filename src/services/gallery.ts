@@ -6,13 +6,13 @@ export type Tag = {
   id: number;
   name: string;
   slug: string;
-  count: number;
+  count?: number;
 };
 
 export type Image = {
   id: number;
   name: string;
-  objectUrl: string;
+  objectUrl: string | null;
   tags: {
     id: number;
     name: string;
