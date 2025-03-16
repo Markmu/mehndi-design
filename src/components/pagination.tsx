@@ -19,6 +19,19 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
 
   return (
     <nav className="flex items-center space-x-2">
+      {/* 首页按钮 */}
+      <button
+        onClick={() => handlePageChange(1)}
+        disabled={currentPage === 1}
+        className={`px-3 py-1 rounded ${
+          currentPage === 1
+            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            : 'bg-gray-100 text-[#2D1810] hover:bg-gray-200'
+        }`}
+      >
+        First
+      </button>
+      
       <button
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
@@ -28,7 +41,7 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
             : 'bg-gray-100 text-[#2D1810] hover:bg-gray-200'
         }`}
       >
-        上一页
+        Prev
       </button>
       
       {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -68,7 +81,20 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
             : 'bg-gray-100 text-[#2D1810] hover:bg-gray-200'
         }`}
       >
-        下一页
+        Next
+      </button>
+      
+      {/* 尾页按钮 */}
+      <button
+        onClick={() => handlePageChange(totalPages)}
+        disabled={currentPage === totalPages}
+        className={`px-3 py-1 rounded ${
+          currentPage === totalPages
+            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            : 'bg-gray-100 text-[#2D1810] hover:bg-gray-200'
+        }`}
+      >
+        Tail
       </button>
     </nav>
   );
