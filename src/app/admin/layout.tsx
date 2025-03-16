@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { Providers } from '../providers';
 
 export default function Layout({
@@ -8,7 +8,12 @@ export default function Layout({
 }) {
   return (
     <>
-    <Providers>{children}</Providers></>
+      <Providers>
+        <Suspense fallback={<div>Loading</div>}>
+          {children}
+        </Suspense>
+      </Providers>
+    </>
   )
 }
 
