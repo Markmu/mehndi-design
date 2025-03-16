@@ -25,13 +25,13 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('用户名或密码不正确');
+        setError('Invalid username or password');
       } else {
         // 登录成功，使用硬重定向
         window.location.href = callbackUrl;
       }
     } catch (error) {
-      setError('登录请求失败');
+      setError('Fail to Login');
       console.error('登录请求失败:', error);
     } finally {
       setLoading(false);
@@ -41,7 +41,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center text-[#2D1810] mb-6">管理员登录</h1>
+        <h1 className="text-2xl font-bold text-center text-[#2D1810] mb-6">Admin Login</h1>
         
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
@@ -52,7 +52,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-              用户名
+              Username
             </label>
             <input
               id="username"
@@ -66,7 +66,7 @@ export default function LoginPage() {
           
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              密码
+              Password
             </label>
             <input
               id="password"
@@ -86,9 +86,9 @@ export default function LoginPage() {
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                登录中...
+                ...
               </>
-            ) : '登录'}
+            ) : 'Log In'}
           </button>
         </form>
       </div>
