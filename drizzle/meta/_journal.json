@@ -8,6 +8,27 @@
       "when": 1742132247661,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1742233693818,
+      "tag": "0003_seed_tags",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1742233938706,
+      "tag": "0004_seed_images",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1742234008844,
+      "tag": "0005_seed_image_tags",
+      "breakpoints": true
     }
   ]
 }
