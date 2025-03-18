@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/navigation'
 import Footer from '@/components/footer'
+import { GoogleTagManager } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,6 +17,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
@@ -24,6 +28,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </div>
+        <GoogleTagManager gtmId={gtmId} />
       </body>
     </html>
   )
