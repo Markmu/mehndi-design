@@ -2,6 +2,13 @@ import { getTags, getGalleryData } from '@/services/gallery';
 import TagList from '@/components/tag-list';
 import ImageGrid from '@/components/image-grid';
 import Pagination from '@/components/pagination';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: process.env.HOST + "gallery",
+  }
+}
 
 type SearchParams = Promise<{
   searchParams: { [key: string]: string | undefined };
