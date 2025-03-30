@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Henna Designs',
-  description: 'Your Ultimate Collection of Traditional & Modern Henna Patterns',
+  description: 'Discover exquisite henna designs in our curated collection. Traditional & modern henna design inspiration for weddings, festivals & personal adornment with cultural context.',
 }
 
 export default function RootLayout({
