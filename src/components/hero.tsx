@@ -40,7 +40,6 @@ const Hero = async () => {
           ))}
         </div>
       </div>
-      <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2 w-[120%] h-24 bg-white rotate-1"></div>
     </div>
   );
 };
