@@ -31,7 +31,7 @@ export default function ImageList({
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   // 加载标签数据
   useEffect(() => {
@@ -57,13 +57,11 @@ export default function ImageList({
       try {
         // 构建查询参数
         let url = `/api/images?page=${page}&pageSize=5`;
-        
-        if (selectedTagId === null) {
+
+        if (selectedTag === null) {
           url += '&tag=all';
-        } else if (selectedTagId === -1) {
-          url += '&tag=none';
         } else {
-          url += `&tag=${selectedTagId}`;
+          url += `&tag=${selectedTag}`;
         }
 
         const response = await fetch(url);
@@ -80,11 +78,11 @@ export default function ImageList({
     }
 
     loadImages();
-  }, [page, selectedTagId, updateTrigger]); // 添加 updateTrigger 作为依赖
+  }, [page, selectedTag, updateTrigger]); // 添加 updateTrigger 作为依赖
 
   // 处理标签筛选变化
-  const handleTagFilterChange = (tagId: number | null) => {
-    setSelectedTagId(tagId);
+  const handleTagFilterChange = (tagSlug: string | null) => {
+    setSelectedTag(tagSlug);
     setPage(1); // 重置页码
   };
 
@@ -97,27 +95,25 @@ export default function ImageList({
     <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Images</h2>
-        
+
         {/* 标签筛选下拉框 */}
         <div className="relative">
           <select
             className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-[#7E4E3B] focus:border-[#7E4E3B]"
-            value={selectedTagId === null ? 'all' : selectedTagId === -1 ? 'no-tags' : selectedTagId}
+            value={selectedTag === null ? 'all' : selectedTag}
             onChange={(e) => {
               const value = e.target.value;
               if (value === 'all') {
                 handleTagFilterChange(null);
-              } else if (value === 'no-tags') {
-                handleTagFilterChange(-1);
               } else {
-                handleTagFilterChange(Number(value));
+                handleTagFilterChange(value);
               }
             }}
           >
-            <option value="all">所有图片</option>
-            <option value="no-tags">无标签图片</option>
+            <option value="all">All</option>
+            <option value="none">None</option>
             {allTags.map(tag => (
-              <option key={tag.id} value={tag.id}>
+              <option key={tag.id} value={tag.slug}>
                 {tag.name}
               </option>
             ))}
@@ -141,9 +137,8 @@ export default function ImageList({
               images.map(image => (
                 <div
                   key={image.id}
-                  className={`flex items-center p-2 rounded cursor-pointer ${
-                    selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center p-2 rounded cursor-pointer ${selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
+                    }`}
                   onClick={() => onSelectImage(image)}
                 >
                   <img
