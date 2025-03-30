@@ -141,7 +141,7 @@ export default function AdminPage() {
         // 显示成功提示
         setToast({
           show: true,
-          message: '图片删除成功',
+          message: 'successfully deleted',
           type: 'success'
         });
 
@@ -151,15 +151,15 @@ export default function AdminPage() {
         // 显示错误提示
         setToast({
           show: true,
-          message: '图片删除失败',
+          message: 'failed to delete',
           type: 'error'
         });
       }
     } catch (error) {
-      console.error('删除图片失败:', error);
+      console.error('failed to deleted:', error);
       setToast({
         show: true,
-        message: '删除图片失败',
+        message: 'failed to deleted',
         type: 'error'
       });
     }

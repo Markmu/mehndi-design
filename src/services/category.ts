@@ -20,7 +20,6 @@ export async function getCategories(): Promise<Category[]> {
          FROM ${images} 
          JOIN ${imageTags} ON ${images.id} = ${imageTags.imageId} 
          WHERE ${imageTags.tagId} = ${tags.id} 
-         ORDER BY ${images.id} DESC 
          LIMIT 1)
       `,
     })
