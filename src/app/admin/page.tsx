@@ -320,14 +320,6 @@ export default function AdminPage() {
                           </span>
                         ))}
                       </div>
-
-                      {/* 添加删除按钮 */}
-                      <button
-                        onClick={() => setDeleteConfirm(true)}
-                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm mt-2"
-                      >
-                        Delete Image
-                      </button>
                     </div>
                   </div>
 
@@ -347,12 +339,20 @@ export default function AdminPage() {
                     ))}
                   </div>
 
-                  <button
-                    onClick={saveTagChanges}
-                    className="px-4 py-2 bg-[#7E4E3B] text-white rounded hover:bg-[#6D3D2A]"
-                  >
-                    Save
-                  </button>
+                  <div className="flex justify-between">
+                    <button
+                      onClick={saveTagChanges}
+                      className="px-4 py-2 bg-[#7E4E3B] text-white rounded hover:bg-[#6D3D2A]"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirm(true)}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </>
               ) : (
                 <div className="flex items-center justify-center h-64 text-gray-500">
