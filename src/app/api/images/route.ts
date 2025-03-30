@@ -25,7 +25,13 @@ export async function GET(request: NextRequest) {
 
     let query = null;
     // filter if with tag params
-    if (tagSlug !== "all") {
+    if (tagSlug === "none") {
+      // Query images that have no tags
+      query = imagesSelect
+        .leftJoin(imageTags, eq(imageTags.imageId, images.id))
+        .where(sql`${imageTags.imageId} IS NULL`);
+    } else if (tagSlug !== "all") {
+      // Query images with specific tag
       query = imagesSelect
         .innerJoin(imageTags, eq(imageTags.imageId, images.id))
         .innerJoin(
@@ -33,6 +39,7 @@ export async function GET(request: NextRequest) {
           and(eq(tags.id, imageTags.tagId), eq(tags.slug, tagSlug))
         );
     } else {
+      // Query all images
       query = imagesSelect;
     }
 

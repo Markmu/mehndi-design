@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Toast from '@/components/toast';
-import Pagination from '@/components/pagination';
 import ImageUploader from '@/components/image-uploader';
 import { signOut } from "next-auth/react";
+import ImageList from '@/components/admin/image-list';
+import { Tag } from '@/model/tag';
 
 type Image = {
   id: number;
@@ -16,45 +17,18 @@ type Image = {
   }[];
 };
 
-type Tag = {
-  id: number;
-  name: string;
-  slug: string;
-};
-
 export default function AdminPage() {
-  const [images, setImages] = useState<Image[]>([]);
   const [allTags, setAllTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<Image | null>(null);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'info' }>({
     show: false,
     message: '',
     type: 'success'
   });
 
-  useEffect(() => {
-    async function loadImages() {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/images?page=${page}&pageSize=20&tag=all`);
-        if (response.ok) {
-          const result = await response.json();
-          setImages(result.data);
-          setTotalPages(result.pagination.totalPages);
-        }
-      } catch (error) {
-        console.error('fail to load images:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const [updateTrigger, setUpdateTrigger] = useState(0);
 
-    loadImages();
-  }, [page]);
 
   useEffect(() => {
     async function loadTags() {
@@ -101,20 +75,6 @@ export default function AdminPage() {
       });
 
       if (response.ok) {
-        // update local state
-        setImages(prev =>
-          prev.map(img =>
-            img.id === selectedImage.id
-              ? {
-                ...img,
-                tags: allTags
-                  .filter(tag => selectedTags.includes(tag.id))
-                  .map(tag => ({ id: tag.id, name: tag.name }))
-              }
-              : img
-          )
-        );
-
         // 更新选中的图片
         setSelectedImage(prev => {
           if (!prev) return null;
@@ -125,6 +85,9 @@ export default function AdminPage() {
               .map(tag => ({ id: tag.id, name: tag.name }))
           };
         });
+
+        // 触发 ImageList 更新
+        setUpdateTrigger(prev => prev + 1);
 
         // 显示成功提示
         setToast({
@@ -168,12 +131,12 @@ export default function AdminPage() {
       });
 
       if (response.ok) {
-        // 从列表中移除已删除的图片
-        setImages(prev => prev.filter(img => img.id !== selectedImage.id));
-
         // 清除选中状态
         setSelectedImage(null);
         setSelectedTags([]);
+
+        // 触发 ImageList 更新
+        setUpdateTrigger(prev => prev + 1);
 
         // 显示成功提示
         setToast({
@@ -202,11 +165,6 @@ export default function AdminPage() {
     }
   };
 
-  // 添加页面变更处理函数
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-
   // 添加上传对话框状态
   const [showUploadDialog, setShowUploadDialog] = useState(false);
 
@@ -215,6 +173,9 @@ export default function AdminPage() {
     // 关闭上传对话框
     setShowUploadDialog(false);
 
+    // 触发 ImageList 更新
+    setUpdateTrigger(prev => prev + 1);
+
     // 显示成功提示
     setToast({
       show: true,
@@ -222,9 +183,6 @@ export default function AdminPage() {
       type: 'success'
     });
 
-    // 重新加载图片列表
-    setPage(1);
-    loadImages();
   };
 
   // 处理上传错误
@@ -236,22 +194,6 @@ export default function AdminPage() {
     });
   };
 
-  // 加载图片列表函数
-  const loadImages = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/images?page=${page}&pageSize=20&tag=all`);
-      if (response.ok) {
-        const result = await response.json();
-        setImages(result.data);
-        setTotalPages(result.pagination.totalPages);
-      }
-    } catch (error) {
-      console.error('fail to load images:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // 添加登出函数
   // 在现有代码中添加 signOut 导入
@@ -348,48 +290,12 @@ export default function AdminPage() {
           </div>
 
           <div className="grid md:grid-cols-5 gap-6">
-            {/* Image List */}
-            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Images</h2>
-
-              {loading ? (
-                <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7E4E3B]"></div>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-4 max-h-[600px] overflow-y-auto">
-                    {images.map(image => (
-                      <div
-                        key={image.id}
-                        className={`flex items-center p-2 rounded cursor-pointer ${selectedImage?.id === image.id ? 'bg-[#FDF7F4] border border-[#7E4E3B]' : 'hover:bg-gray-100'
-                          }`}
-                        onClick={() => handleSelectImage(image)}
-                      >
-                        <img
-                          src={image.objectUrl}
-                          alt={image.name}
-                          className="w-32 h-32 object-cover rounded mr-3"
-                        />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium truncate">{image.name}</p>
-                          <p className="text-xs text-gray-500">{image.tags.length} 个标签</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* 使用 Pagination 组件替代原有分页控件 */}
-                  <div className="flex justify-center mt-4">
-                    <Pagination
-                      currentPage={page}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
+            {/* 使用提取出的 ImageList 组件，传递更新触发器 */}
+            <ImageList
+              selectedImage={selectedImage}
+              onSelectImage={handleSelectImage}
+              updateTrigger={updateTrigger}
+            />
 
             {/* tag edit area */}
             <div className="md:col-span-3 bg-white p-4 rounded-lg shadow">
