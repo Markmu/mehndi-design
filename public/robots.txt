@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Allow: /
+Allow: /gallary
+
+Sitemap: https://www.henna-designs.com/sitemap.xml
