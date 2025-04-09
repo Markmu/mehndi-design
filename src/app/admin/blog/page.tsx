@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { BlogPost } from '@/model/blog';
 import Toast from '@/components/toast';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function AdminBlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -23,16 +31,16 @@ export default function AdminBlogPage() {
         });
 
         if (!response.ok) {
-          throw new Error('获取博客文章失败');
+          throw new Error('Fail to load blog posts');
         }
 
         const data = await response.json();
         setPosts(data);
       } catch (error) {
-        console.error('加载博客文章失败:', error);
+        console.error('fail to load blog posts:', error);
         setToast({
           show: true,
-          message: '加载博客文章失败',
+          message: 'Fail to load blog posts, please check your network connection or try again later',
           type: 'error'
         });
       } finally {
@@ -102,50 +110,45 @@ export default function AdminBlogPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center items-center min-h-[400px]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7E4E3B]"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  标题
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  作者
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  发布日期
-                </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  操作
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+        <div className="bg-white rounded-lg shadow">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>标题</TableHead>
+                <TableHead>作者</TableHead>
+                <TableHead>发布日期</TableHead>
+                <TableHead className="text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {posts.map(post => (
-                <tr key={post.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <TableRow key={post.id}>
+                  <TableCell>
                     <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0">
-                        <img className="h-10 w-10 rounded object-cover" src={post.coverImage} alt="" />
+                        <img 
+                          className="h-10 w-10 rounded object-cover" 
+                          src={post.coverImage} 
+                          alt={post.title} 
+                        />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{post.title}</div>
-                        <div className="text-sm text-gray-500">{post.slug}</div>
+                        <div className="font-medium">{post.title}</div>
+                        <div className="text-sm text-muted-foreground">{post.slug}</div>
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{post.author.name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{post.publishedAt}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Link href={`/admin/blog/edit/${post.id}`} className="text-[#7E4E3B] hover:text-[#6D3D2A] mr-4">
+                  </TableCell>
+                  <TableCell>{post.author.name}</TableCell>
+                  <TableCell>{post.publishedAt}</TableCell>
+                  <TableCell className="text-right">
+                    <Link 
+                      href={`/admin/blog/edit/${post.id}`} 
+                      className="text-[#7E4E3B] hover:text-[#6D3D2A] mr-4"
+                    >
                       编辑
                     </Link>
                     <button
@@ -154,11 +157,11 @@ export default function AdminBlogPage() {
                     >
                       删除
                     </button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

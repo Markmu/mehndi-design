@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { BlogPost } from '@/model/blog';
 import ImageUploader from '../image-uploader';
+import moment from 'moment';
 
 interface BlogEditorProps {
   post?: BlogPost;
@@ -48,7 +49,7 @@ export default function BlogEditor({ post, onSave, onCancel }: BlogEditorProps) 
         excerpt,
         coverImage,
         tags: tagArray,
-        publishedAt: post?.publishedAt || new Date().toISOString().split('T')[0],
+        publishedAt: post?.publishedAt || moment().format('YYYY-MM-DD HH:mm:ss'),
         author: post?.author || {
           name: '管理员', // 默认作者，实际应用中应该使用当前登录用户
         }

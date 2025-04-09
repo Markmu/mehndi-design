@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, dbBlog } from "@/db";
 import { blogPosts, blogTags, blogPostsTags } from "@/db/schema/blog";
 import { desc, eq } from "drizzle-orm";
+import moment from "moment";
 
 // GET - 获取所有博客文章
 export async function GET(request: NextRequest) {
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
           content: post.content,
           excerpt: post.excerpt,
           coverImage: post.coverImage,
-          publishedAt: post.publishedAt,
+          publishedAt: moment(post.publishedAt).format("YYYY-MM-DD HH:mm:ss"),
           author: {
             name: post.authorName,
             avatar: post.authorAvatar,
