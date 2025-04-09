@@ -97,7 +97,7 @@ export default function AdminBlogPage() {
       )}
 
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-[#2D1810]">博客管理</h1>
+        <h1 className="text-3xl font-bold text-[#2D1810]">Blog Management</h1>
         <Link
           href="/admin/blog/new"
           className="px-4 py-2 bg-[#7E4E3B] text-white rounded hover:bg-[#6D3D2A] flex items-center"
@@ -118,10 +118,10 @@ export default function AdminBlogPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>标题</TableHead>
-                <TableHead>作者</TableHead>
-                <TableHead>发布日期</TableHead>
-                <TableHead className="text-right">操作</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Author</TableHead>
+                <TableHead>Published Date</TableHead>
+                <TableHead className="text-right">Operations</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -149,13 +149,13 @@ export default function AdminBlogPage() {
                       href={`/admin/blog/edit/${post.id}`} 
                       className="text-[#7E4E3B] hover:text-[#6D3D2A] mr-4"
                     >
-                      编辑
+                      Edit
                     </Link>
                     <button
                       onClick={() => deletePost(post.id)}
                       className="text-red-600 hover:text-red-900"
                     >
-                      删除
+                      Delete
                     </button>
                   </TableCell>
                 </TableRow>
