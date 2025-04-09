@@ -26,6 +26,7 @@ export const imageTags = pgTable('image_tags', {
   tagId: integer('tag_id').notNull().references(() => tags.id, { onDelete: 'cascade' }),
 });
 
+
 // 类型定义
 export type Image = typeof images.$inferSelect;
 export type NewImage = typeof images.$inferInsert;
@@ -33,3 +34,4 @@ export type Tag = typeof tags.$inferSelect;
 export type NewTag = typeof tags.$inferInsert;
 export type ImageTag = typeof imageTags.$inferSelect;
 export type NewImageTag = typeof imageTags.$inferInsert;
+

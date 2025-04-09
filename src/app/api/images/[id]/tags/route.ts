@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { imageTags, tags } from '@/db/schema';
+import { imageTags, tags } from '@/db/schema/image';
 import { eq, and } from 'drizzle-orm';
 
 export async function PUT(

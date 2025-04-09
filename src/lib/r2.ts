@@ -31,5 +31,5 @@ export async function uploadImageToR2(file: Buffer, key: string, contentType: st
 
 // 获取图片的签名 URL
 export async function getImageUrl(key: string) {
-  return process.env.HOST + key;
+  return process.env.R2_OBJ_HOST + key;
 }

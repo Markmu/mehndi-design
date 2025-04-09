@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { images, tags, imageTags } from '@/db/schema';
+import { images, tags, imageTags } from '@/db/schema/image';
 import { uploadImageToR2 } from '@/lib/r2';
 import { v4 as uuidv4 } from 'uuid';
 import { eq } from 'drizzle-orm';

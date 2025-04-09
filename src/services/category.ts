@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { tags, images, imageTags } from '@/db/schema';
+import { tags, images, imageTags } from '@/db/schema/image';
 import { sql, eq, desc } from 'drizzle-orm';
 
 export type Category = {

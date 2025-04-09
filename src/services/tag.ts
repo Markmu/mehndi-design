@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { tags as tagsTable } from '@/db/schema';
+import { tags as tagsTable } from '@/db/schema/image';
 
 export type Tag = {
   id: number;

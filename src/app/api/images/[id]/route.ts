@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { images, imageTags } from "@/db/schema";
+import { images, imageTags } from "@/db/schema/image";
 import { eq } from "drizzle-orm";
 
 export async function DELETE(

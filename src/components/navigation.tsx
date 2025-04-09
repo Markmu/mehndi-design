@@ -10,6 +10,7 @@ const Navigation = async () => {
   const links = [
     { href: '/', label: 'Home' },
     { href: '/gallery', label: 'Gallery' },
+    { href: '/blog', label: 'Blog'},
   ];
 
   return (

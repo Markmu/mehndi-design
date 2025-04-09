@@ -1,16 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-
-type Tag = {
-  id: number;
-  name: string;
-  slug: string;
-};
+import { Tag } from '@/model/tag';
 
 type ImageUploaderProps = {
   tags: Tag[];
-  onSuccess: () => void;
+  onSuccess: (imageUrl: string) => void;  // 修改类型定义，添加 imageUrl 参数
   onError: (message: string) => void;
 };
 
@@ -85,14 +80,15 @@ export default function ImageUploader({ tags, onSuccess, onError }: ImageUploade
       });
 
       if (response.ok) {
+        const data = await response.json();
         // 重置上传状态
         setUploadFile(null);
         setUploadPreview(null);
         setUploadName('');
         setUploadTags([]);
 
-        // 通知父组件上传成功
-        onSuccess();
+        // 传递上传后的图片 URL 给父组件
+        onSuccess(data.objectUrl);
       } else {
         // 显示错误提示
         const errorData = await response.json();

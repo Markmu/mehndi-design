@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.development' });
 
 export default {
-  schema: './src/db/schema.ts',
+  schema: './src/db/schema',
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
@@ -13,5 +13,5 @@ export default {
     password: process.env.DATABASE_PASSWORD || '',
     database: process.env.DATABASE_NAME || '',
     ssl: false,
-  },
+  }
 } satisfies Config;
