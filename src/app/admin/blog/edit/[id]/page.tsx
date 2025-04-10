@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import BlogEditor from '@/components/admin/blog-editor';
 import { BlogPost } from '@/model/blog';
 import Toast from '@/components/toast';
 
-export default function EditBlogPage({ params }: { params: { id: string } }) {
+export default function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,19 +21,19 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     async function loadPost() {
       setLoading(true);
       try {
-        const response = await fetch(`/api/blog/${params.id}`);
+        const response = await fetch(`/api/blog/${id}`);
 
         if (!response.ok) {
-          throw new Error('文章加载失败');
+          throw new Error('Failed to load blog post');
         }
 
         const data = await response.json();
         setPost(data);
       } catch (error) {
-        console.error('加载博客文章失败:', error);
+        console.error('Failed to load blog post:', error);
         setToast({
           show: true,
-          message: '加载文章失败，请稍后重试',
+          message: 'Failed to load blog post',
           type: 'error'
         });
       } finally {
@@ -41,11 +42,11 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     }
 
     loadPost();
-  }, [params.id]);
+  }, [id]);
 
   const handleSave = async (updatedPost: Partial<BlogPost>) => {
     try {
-      const response = await fetch(`/api/blog/${params.id}`, {
+      const response = await fetch(`/api/blog/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +55,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
       });
 
       if (!response.ok) {
-        throw new Error('更新文章失败');
+        throw new Error('Failed to update blog post');
       }
 
       const data = await response.json();
@@ -62,7 +63,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
 
       setToast({
         show: true,
-        message: '文章更新成功',
+        message: 'Successfully updated blog post',
         type: 'success'
       });
 
@@ -71,10 +72,10 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         router.push('/admin/blog');
       }, 1500);
     } catch (error) {
-      console.error('更新文章失败:', error);
+      console.error('Failed to update blog:', error);
       setToast({
         show: true,
-        message: '更新文章失败，请稍后重试',
+        message: 'Failed to update blog',
         type: 'error'
       });
     }
@@ -98,7 +99,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         />
       )}
 
-      <h1 className="text-3xl font-bold text-[#2D1810] mb-8">编辑文章</h1>
+      <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Edit Blog</h1>
 
       {loading ? (
         <div className="flex justify-center py-8">
@@ -114,12 +115,12 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         </div>
       ) : (
         <div className="text-center py-8">
-          <p className="text-red-500 mb-4">文章不存在或已被删除</p>
+          <p className="text-red-500 mb-4">Blog were not exists</p>
           <button
             onClick={() => router.push('/admin/blog')}
             className="px-4 py-2 bg-[#7E4E3B] text-white rounded hover:bg-[#6D3D2A]"
           >
-            返回博客管理
+            Back
           </button>
         </div>
       )}
