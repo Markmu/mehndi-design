@@ -63,3 +63,47 @@ export async function listBlog(tag?: string | null): Promise<BlogPost[]> {
 
   return formattedPosts;
 }
+
+/**
+ * 根据 slug 获取博客文章
+ * @param slug 文章的 slug
+ * @returns 博客文章或 null
+ */
+export async function getBlogBySlug(slug: string) {
+  try {
+    const post = await dbBlog.query.blogPosts.findFirst({
+      where: (posts, { eq }) => eq(posts.slug, slug),
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    // 获取文章标签
+    const tags = await db
+      .select({
+        name: blogTags.name,
+      })
+      .from(blogTags)
+      .innerJoin(blogPostsTags, eq(blogTags.id, blogPostsTags.tagId))
+      .where(eq(blogPostsTags.postId, post.id));
+
+    return {
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.excerpt,
+      coverImage: post.coverImage,
+      publishedAt: moment(post.publishedAt).format("YYYY-MM-DD HH:mm:ss"),
+      author: {
+        name: post.authorName,
+        avatar: post.authorAvatar,
+      },
+      tags: tags.map((tag) => tag.name),
+    };
+  } catch (error) {
+    console.error("获取博客文章失败:", error);
+    return null;
+  }
+}

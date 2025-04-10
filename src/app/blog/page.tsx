@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { BlogPost } from '@/model/blog';
-
+import { listBlog } from '@/services/blog';
 
 export default async function BlogPage() {
-  const posts = [];
+  // 调用服务层函数获取博客列表
+  const posts = await listBlog();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -11,10 +11,10 @@ export default async function BlogPage() {
 
       {posts.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">暂无博客文章</p>
+          <p className="text-gray-500">...</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
           {posts.map(post => (
             <Link href={`/blog/${post.slug}`} key={post.id} className="group">
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">

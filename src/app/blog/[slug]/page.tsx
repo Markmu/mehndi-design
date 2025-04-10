@@ -1,75 +1,66 @@
 import { notFound } from 'next/navigation';
-import { BlogPost } from '@/model/blog';
+import Link from 'next/link';
+import { getBlogBySlug } from '@/services/blog';
 
-async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/blog/slug/${slug}`, {
-      cache: 'no-store'
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching blog post:', error);
-    return null;
-  }
-}
-
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug);
+export default async function BlogDetailPage({
+  params
+}: {
+  params: { slug: string }
+}) {
+  const { slug } = params;
+  const post = await getBlogBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+      {/* 返回按钮 */}
       <div className="mb-8">
-        <div className="flex items-center mb-4">
-          <span className="text-sm text-gray-500">{post.publishedAt}</span>
-          <span className="mx-2 text-gray-300">•</span>
-          <div className="flex items-center">
-            {post.author.avatar && (
-              <img
-                src={post.author.avatar}
-                alt={post.author.name}
-                className="w-6 h-6 rounded-full mr-2"
-              />
-            )}
-            <span className="text-sm text-gray-500">{post.author.name}</span>
-          </div>
+        <Link 
+          href="/blog" 
+          className="text-[#7E4E3B] hover:text-[#6D3D2A] flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Back
+        </Link>
+      </div>
+
+      {/* 文章标题和元信息 */}
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-[#2D1810] mb-4">{post.title}</h1>
+        <div className="flex items-center text-gray-500 mb-4">
+          <span>{post.publishedAt}</span>
+          <span className="mx-2">•</span>
+          <span>{post.author.name}</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-[#2D1810] mb-6">{post.title}</h1>
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2">
           {post.tags.map(tag => (
             <span
               key={tag}
-              className="inline-block px-2 py-1 text-xs bg-[#FDF7F4] text-[#7E4E3B] rounded-full"
+              className="inline-block px-3 py-1 text-sm bg-[#FDF7F4] text-[#7E4E3B] rounded-full"
             >
               {tag}
             </span>
           ))}
         </div>
-        <div className="relative h-64 md:h-96 w-full rounded-lg overflow-hidden mb-8">
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            className="object-cover w-full h-full"
-          />
-        </div>
       </div>
 
-      <div
-        className="prose prose-lg max-w-none prose-headings:text-[#2D1810] prose-a:text-[#7E4E3B]"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+      {/* 封面图片 */}
+      <div className="mb-8">
+        <img
+          src={post.coverImage}
+          alt={post.title}
+          className="w-full h-auto rounded-lg object-cover"
+        />
+      </div>
 
-      <div className="mt-12 pt-8 border-t border-gray-200">
-        <h3 className="text-xl font-semibold text-[#2D1810] mb-4">相关文章</h3>
-        {/* Related articles component can be added here */}
+      {/* 文章内容 */}
+      <div className="prose prose-lg max-w-none">
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
     </div>
   );
