@@ -1,23 +1,9 @@
 import Link from 'next/link';
 import { BlogPost } from '@/model/blog';
 
-async function getBlogPosts(): Promise<BlogPost[]> {
-  try {
-    const response = await fetch('/api/blog');
-
-    if (!response.ok) {
-      return [];
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching blog posts:', error);
-    return [];
-  }
-}
 
 export default async function BlogPage() {
-  const posts = await getBlogPosts();
+  const posts = [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -25,35 +11,37 @@ export default async function BlogPage() {
 
       {posts.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">404</p>
+          <p className="text-gray-500">暂无博客文章</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map(post => (
             <Link href={`/blog/${post.slug}`} key={post.id} className="group">
-              <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform group-hover:shadow-lg">
-                <div className="relative h-48 w-full">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                {/* 封面图片区域 */}
+                <div className="aspect-[16/9] relative overflow-hidden">
                   <img
                     src={post.coverImage}
                     alt={post.title}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center mb-2">
-                    <span className="text-sm text-gray-500">{post.publishedAt}</span>
-                    <span className="mx-2 text-gray-300">•</span>
-                    <span className="text-sm text-gray-500">{post.author.name}</span>
-                  </div>
-                  <h2 className="text-xl font-semibold text-[#2D1810] mb-2 group-hover:text-[#7E4E3B]">
+                
+                {/* 文章信息区域 */}
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold text-[#2D1810] mb-2 group-hover:text-[#7E4E3B] line-clamp-2">
                     {post.title}
                   </h2>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <span>{post.publishedAt}</span>
+                    <span className="mx-2">•</span>
+                    <span>{post.author.name}</span>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {post.tags.map(tag => (
                       <span
                         key={tag}
-                        className="inline-block px-2 py-1 text-xs bg-[#FDF7F4] text-[#7E4E3B] rounded-full"
+                        className="inline-block px-2 py-0.5 text-xs bg-[#FDF7F4] text-[#7E4E3B] rounded-full"
                       >
                         {tag}
                       </span>

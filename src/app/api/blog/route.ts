@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, dbBlog } from "@/db";
 import { blogPosts, blogTags, blogPostsTags } from "@/db/schema/blog";
-import { desc, eq } from "drizzle-orm";
-import moment from "moment";
+import { eq } from "drizzle-orm";
+import { listBlog } from "@/services/blog";
 
 // GET - 获取所有博客文章
 export async function GET(request: NextRequest) {
@@ -10,56 +10,8 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const tag = searchParams.get("tag");
 
-    // 基本查询
-    let query = dbBlog.query.blogPosts.findMany({
-      orderBy: [desc(blogPosts.publishedAt)],
-    });
-
-    // 如果指定了标签过滤
-    if (tag && tag !== "all") {
-      query = dbBlog.query.blogPosts.findMany({
-        where: (posts, { eq, exists }) =>
-          exists(
-            db
-              .select()
-              .from(blogPostsTags)
-              .where(eq(blogPostsTags.postId, posts.id))
-              .innerJoin(blogTags, eq(blogTags.id, blogPostsTags.tagId))
-            // .where(eq(blogTags.name, tag))
-          ),
-        orderBy: [desc(blogPosts.publishedAt)],
-      });
-    }
-
-    const posts = await query;
-
-    // 获取每篇文章的标签
-    const formattedPosts = await Promise.all(
-      posts.map(async (post) => {
-        const tags = await db
-          .select({
-            name: blogTags.name,
-          })
-          .from(blogTags)
-          .innerJoin(blogPostsTags, eq(blogTags.id, blogPostsTags.tagId))
-          .where(eq(blogPostsTags.postId, post.id));
-
-        return {
-          id: post.id,
-          title: post.title,
-          slug: post.slug,
-          content: post.content,
-          excerpt: post.excerpt,
-          coverImage: post.coverImage,
-          publishedAt: moment(post.publishedAt).format("YYYY-MM-DD HH:mm:ss"),
-          author: {
-            name: post.authorName,
-            avatar: post.authorAvatar,
-          },
-          tags: tags.map((tag) => tag.name),
-        };
-      })
-    );
+    // 使用服务层函数获取博客列表
+    const formattedPosts = await listBlog(tag);
 
     return NextResponse.json(formattedPosts);
   } catch (error) {
