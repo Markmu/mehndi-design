@@ -1,6 +1,15 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getBlogBySlug } from '@/services/blog';
+import type { Metadata } from 'next'
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  return {
+    alternates: {
+      canonical: process.env.HOST + "blog/" + params.slug,
+    },
+  }
+}
 
 export default async function BlogDetailPage({
   params

@@ -1,13 +1,19 @@
 import Link from 'next/link';
 import { listBlog } from '@/services/blog';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: process.env.HOST + "blog",
+  }
+}
 
 export default async function BlogPage() {
-  // 调用服务层函数获取博客列表
   const posts = await listBlog();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Blog</h1>
+      <h1 className="text-3xl font-bold text-[#2D1810] mb-8">Blogs</h1>
 
       {posts.length === 0 ? (
         <div className="text-center py-12">
