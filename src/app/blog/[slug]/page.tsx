@@ -3,20 +3,21 @@ import Link from 'next/link';
 import { getBlogBySlug } from '@/services/blog';
 import type { Metadata } from 'next'
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   return {
     alternates: {
-      canonical: process.env.HOST + "blog/" + params.slug,
+      canonical: process.env.HOST + "blog/" + slug,
     },
   }
 }
 
-export default async function BlogDetailPage({
-  params
-}: {
-  params: { slug: string }
-}) {
-  const { slug } = params;
+export default async function BlogDetailPage({ params }: Props) {
+  const { slug } = await params;
   const post = await getBlogBySlug(slug);
 
   if (!post) {
@@ -27,8 +28,8 @@ export default async function BlogDetailPage({
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       {/* 返回按钮 */}
       <div className="mb-8">
-        <Link 
-          href="/blog" 
+        <Link
+          href="/blog"
           className="text-[#7E4E3B] hover:text-[#6D3D2A] flex items-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
