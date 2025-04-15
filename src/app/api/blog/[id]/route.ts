@@ -30,10 +30,10 @@ export async function GET(
 // PUT - Update a specific blog post
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
 
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });
@@ -79,10 +79,10 @@ export async function PUT(
 // DELETE - Delete a specific blog post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
 
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });
