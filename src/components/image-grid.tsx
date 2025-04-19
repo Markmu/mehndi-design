@@ -41,7 +41,7 @@ const ImageGrid = ({ images, loading = false }: ImageGridProps) => {
   if (images.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-lg text-gray-500">没有找到符合条件的图片</p>
+        <p className="text-lg text-gray-500">......</p>
       </div>
     );
   }

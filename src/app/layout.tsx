@@ -4,6 +4,7 @@ import './globals.css'
 import Navigation from '@/components/navigation'
 import Footer from '@/components/footer'
 import { GoogleTagManager } from '@next/third-parties/google';
+import AuthProvider from '../components/providers/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navigation />
-          {children}
-          <Footer />
-        </div>
-        <GoogleTagManager gtmId={gtmId} />
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navigation />
+            {children}
+            <Footer />
+          </div>
+          <GoogleTagManager gtmId={gtmId} />
+        </AuthProvider>
       </body>
     </html>
   )

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
+import LoginDialog from './login-dialog';
 
 type MobileMenuProps = {
   links: Array<{ href: string; label: string }>;
@@ -11,6 +13,7 @@ type MobileMenuProps = {
 const MobileMenu = ({ links }: MobileMenuProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   return (
     <div className="md:hidden flex items-center h-full">
@@ -54,6 +57,37 @@ const MobileMenu = ({ links }: MobileMenuProps) => {
                 {label}
               </Link>
             ))}
+            
+            {/* 添加登录/登出按钮 */}
+            {session ? (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="px-3 py-2 text-base font-medium text-[#2D1810]">
+                  {session.user?.name}
+                </div>
+                <button
+                  onClick={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-[#7E4E3B] hover:bg-[#FDF7F4]"
+                >
+                  Log out
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <LoginDialog
+                  trigger={
+                    <button 
+                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-[#2D1810] hover:bg-[#FDF7F4] hover:text-[#7E4E3B]"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Login
+                    </button>
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

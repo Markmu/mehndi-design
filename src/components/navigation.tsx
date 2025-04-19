@@ -1,16 +1,16 @@
-'use server';
 import Link from 'next/link';
-import { headers } from 'next/headers';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import MobileMenu from './mobile-menu';
+import ClientLoginButton from './client-login-button';
 
 const Navigation = async () => {
-  const headersList = await headers();
-  const pathname = headersList.get('x-pathname') || '/';
+  const session = await getServerSession(authOptions);
 
   const links = [
     { href: '/', label: 'Home' },
     { href: '/gallery', label: 'Gallery' },
-    { href: '/blog', label: 'Blog'},
+    { href: '/blog', label: 'Blog' },
   ];
 
   return (
@@ -31,13 +31,17 @@ const Navigation = async () => {
               <Link
                 key={href}
                 href={href}
-                className={`text-base font-medium ${
-                  pathname === href ? 'text-[#7E4E3B]' : 'text-[#2D1810] hover:text-[#7E4E3B]'
-                }`}
+                className={`text-base font-medium ${href === '/' && (typeof window !== 'undefined' && window.location.pathname === '/') ||
+                    (typeof window !== 'undefined' && window.location.pathname.startsWith(href) && href !== '/')
+                    ? 'text-[#7E4E3B]' : 'text-[#2D1810] hover:text-[#7E4E3B]'
+                  }`}
               >
                 {label}
               </Link>
             ))}
+
+            {/* 用户登录状态 */}
+            <ClientLoginButton session={session} />
           </div>
 
           {/* 移动端菜单 */}

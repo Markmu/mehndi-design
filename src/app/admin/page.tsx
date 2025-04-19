@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Toast from '@/components/toast';
 import ImageUploader from '@/components/image-uploader';
-import { signOut } from "next-auth/react";
 import ImageList from '@/components/admin/image-list';
 import { Tag } from '@/model/tag';
 
@@ -195,26 +194,10 @@ export default function AdminPage() {
   };
 
 
-  // 添加登出函数
-  // 在现有代码中添加 signOut 导入
-  const handleLogout = async () => {
-    await signOut({ redirect: false });
-    window.location.href = '/admin/login';
-  };
+
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-[#2D1810]">Mehndi Design Admin</h1>
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
 
       <main className="flex-grow bg-gray-50">
         {/* Toast 组件 */}
